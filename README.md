@@ -1,8 +1,34 @@
-# React + Vite
+# AY Player
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern web-based audio player built with React and Vite.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Audio file upload and playback
+- Play/Pause controls
+- Progress bar with seek functionality
+- Volume control with mute option
+- Modern UI with Tailwind CSS
+- Responsive design
+
+## Tech Stack
+
+- React 18
+- Vite 4
+- Tailwind CSS
+- Heroicons
+
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Start development server: `npm run dev`
+4. Build for production: `npm run build`
+
+## Deployment
+
+This project is configured for deployment on Vercel.
+
+## License
+
+MIT
