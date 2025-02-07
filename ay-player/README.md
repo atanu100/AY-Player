@@ -1,50 +1,92 @@
-# React + TypeScript + Vite
+﻿# AY Player
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern web-based audio player built with React and Vite, inspired by Spotify and YouTube Music's design.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Core Functionality
+- Modern audio player with Spotify/YouTube Music inspired UI
+- Mobile-responsive design with touch support
+- Audio file upload and playback
+- Progress bar with seek functionality
+- Volume control with mute option
+- Error handling and loading states
 
-## Expanding the ESLint configuration
+### Technical Stack
+- React 18 with Vite
+- Tailwind CSS for styling
+- HeroIcons for icons
+- Mobile-first responsive design
+- Touch-optimized controls
+- Proper file cleanup and error handling
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### UI/UX Features
+- Glassmorphism design
+- Gradient backgrounds
+- Hover and active states
+- Touch feedback
+- Loading indicators
+- Error messages
+- Responsive typography
 
-- Configure the top-level `parserOptions` property like this:
+## Getting Started
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+1. Clone the repository:
+\\\ash
+git clone https://github.com/atanu100/AY-Player.git
+cd AY-Player
+\\\
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+2. Install dependencies:
+\\\ash
+npm install
+\\\
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+3. Start development server:
+\\\ash
+npm run dev
+\\\
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+4. Build for production:
+\\\ash
+npm run build
+\\\
+
+## Development
+
+- \
+pm run dev\ - Start development server
+- \
+pm run build\ - Build for production
+- \
+pm run preview\ - Preview production build
+- \
+pm run lint\ - Run ESLint
+
+## Deployment
+
+This project is configured for deployment on Vercel with the following features:
+- Automatic deployments
+- Environment variable support
+- Build optimizations
+- Edge network distribution
+
+## Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+- Mobile browsers with touch support
+
+## Version
+
+Latest commit: cff38e78b8d7b5d0aa753066e241feaecdcaf7e1
+
+## License
+
+MIT
+
+## Author
+
+[Atanu Mondal](https://github.com/atanu100)
