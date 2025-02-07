@@ -4,6 +4,9 @@ import {
   PauseIcon,
   SpeakerWaveIcon,
   SpeakerXMarkIcon,
+  ForwardIcon,
+  BackwardIcon,
+  ArrowUpTrayIcon
 } from '@heroicons/react/24/solid';
 
 /**
@@ -31,8 +34,11 @@ function App() {
   // Cleanup audio URL on unmount or file change
   React.useEffect(() => {
     return () => {
-      if (audioFile) {
-        URL.revokeObjectURL(audioFile);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        if (audioFile) {
+          URL.revokeObjectURL(audioFile);
+        }
       }
     };
   }, [audioFile]);
@@ -41,6 +47,12 @@ function App() {
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Check if file is audio
+      if (!file.type.startsWith('audio/')) {
+        setError('Please upload an audio file');
+        return;
+      }
+      
       if (audioFile) {
         URL.revokeObjectURL(audioFile);
       }
@@ -66,7 +78,10 @@ function App() {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
-        audioRef.current.play();
+        audioRef.current.play().catch(error => {
+          setError('Error playing audio: ' + error.message);
+          setIsPlaying(false);
+        });
       }
       setIsPlaying(!isPlaying);
     }
@@ -117,45 +132,55 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-dark p-6 rounded-2xl shadow-2xl">
-        {/* File upload section */}
-        <div className="mb-6">
-          <label className="block text-center">
-            <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text text-xl font-bold mb-4 block">
-              Upload Your Music
-            </span>
-            <input
-              type="file"
-              accept="audio/*"
-              onChange={handleFileUpload}
-              className="block w-full text-sm text-gray-400
-                file:mr-4 file:py-2 file:px-4
-                file:rounded-full file:border-0
-                file:text-sm file:font-semibold
-                file:bg-primary file:text-white
-                hover:file:bg-secondary
-                cursor-pointer"
-            />
-          </label>
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black flex items-center justify-center p-4">
+      <div className="w-full max-w-2xl bg-black/40 backdrop-blur-lg p-8 rounded-3xl shadow-2xl border border-white/5">
+        {/* Album art and upload section */}
+        <div className="mb-8 flex items-center justify-center">
+          {audioFile ? (
+            <div className="relative group">
+              <div className="w-48 h-48 rounded-2xl bg-gradient-to-br from-purple-600 to-blue-500 flex items-center justify-center shadow-xl">
+                <SpeakerWaveIcon className="w-24 h-24 text-white/50" />
+              </div>
+              <label className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl cursor-pointer">
+                <ArrowUpTrayIcon className="w-12 h-12 text-white" />
+                <input
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+              </label>
+            </div>
+          ) : (
+            <label className="w-48 h-48 rounded-2xl border-2 border-dashed border-white/20 flex flex-col items-center justify-center cursor-pointer hover:border-white/40 transition-colors">
+              <ArrowUpTrayIcon className="w-12 h-12 text-white/50 mb-2" />
+              <span className="text-white/50 text-sm">Upload Music</span>
+              <input
+                type="file"
+                accept="audio/*"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+            </label>
+          )}
         </div>
 
         {/* Error and loading states */}
         {error && (
-          <div className="text-red-500 text-sm text-center mb-4">
+          <div className="text-red-400 text-sm text-center mb-6">
             {error}
           </div>
         )}
 
         {isLoading && (
-          <div className="text-primary text-sm text-center mb-4">
+          <div className="text-blue-400 text-sm text-center mb-6">
             Loading audio...
           </div>
         )}
 
         {/* Audio player controls */}
         {audioFile && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <audio
               ref={audioRef}
               src={audioFile}
@@ -164,54 +189,83 @@ function App() {
               onError={handleError}
             />
 
+            {/* Song info */}
+            <div className="text-center">
+              <h2 className="text-white text-lg font-semibold truncate">
+                {audioFile.split('/').pop().split('.')[0]}
+              </h2>
+              <p className="text-white/60 text-sm">Unknown Artist</p>
+            </div>
+
             {/* Progress bar */}
-            <div className="flex items-center justify-between space-x-4">
-              <span className="text-sm">{formatTime(currentTime)}</span>
+            <div className="space-y-2">
               <input
                 type="range"
                 min="0"
                 max={duration}
                 value={currentTime}
                 onChange={handleProgressChange}
-                className="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                className="w-full h-1 bg-white/10 rounded-full appearance-none cursor-pointer
+                  [&::-webkit-slider-thumb]:appearance-none
+                  [&::-webkit-slider-thumb]:w-3
+                  [&::-webkit-slider-thumb]:h-3
+                  [&::-webkit-slider-thumb]:rounded-full
+                  [&::-webkit-slider-thumb]:bg-white
+                  hover:[&::-webkit-slider-thumb]:bg-blue-500"
               />
-              <span className="text-sm">{formatTime(duration)}</span>
+              <div className="flex justify-between text-xs text-white/60">
+                <span>{formatTime(currentTime)}</span>
+                <span>{formatTime(duration)}</span>
+              </div>
             </div>
 
-            {/* Playback and volume controls */}
-            <div className="flex items-center justify-between">
+            {/* Playback controls */}
+            <div className="flex items-center justify-center space-x-6">
+              <button className="text-white/60 hover:text-white transition-colors">
+                <BackwardIcon className="w-8 h-8" />
+              </button>
               <button
                 onClick={togglePlay}
-                className="p-2 rounded-full bg-primary hover:bg-secondary transition-colors"
+                className="w-14 h-14 rounded-full bg-white flex items-center justify-center hover:scale-105 transition-transform"
               >
                 {isPlaying ? (
-                  <PauseIcon className="h-8 w-8" />
+                  <PauseIcon className="w-7 h-7 text-black" />
                 ) : (
-                  <PlayIcon className="h-8 w-8" />
+                  <PlayIcon className="w-7 h-7 text-black ml-1" />
                 )}
               </button>
+              <button className="text-white/60 hover:text-white transition-colors">
+                <ForwardIcon className="w-8 h-8" />
+              </button>
+            </div>
 
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={toggleMute}
-                  className="p-2 rounded-full hover:bg-gray-700 transition-colors"
-                >
-                  {isMuted ? (
-                    <SpeakerXMarkIcon className="h-6 w-6" />
-                  ) : (
-                    <SpeakerWaveIcon className="h-6 w-6" />
-                  )}
-                </button>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={isMuted ? 0 : volume}
-                  onChange={handleVolumeChange}
-                  className="w-20 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-                />
-              </div>
+            {/* Volume control */}
+            <div className="flex items-center justify-center space-x-2">
+              <button
+                onClick={toggleMute}
+                className="text-white/60 hover:text-white transition-colors"
+              >
+                {isMuted ? (
+                  <SpeakerXMarkIcon className="w-5 h-5" />
+                ) : (
+                  <SpeakerWaveIcon className="w-5 h-5" />
+                )}
+              </button>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={isMuted ? 0 : volume}
+                onChange={handleVolumeChange}
+                className="w-24 h-1 bg-white/10 rounded-full appearance-none cursor-pointer
+                  [&::-webkit-slider-thumb]:appearance-none
+                  [&::-webkit-slider-thumb]:w-3
+                  [&::-webkit-slider-thumb]:h-3
+                  [&::-webkit-slider-thumb]:rounded-full
+                  [&::-webkit-slider-thumb]:bg-white
+                  hover:[&::-webkit-slider-thumb]:bg-blue-500"
+              />
             </div>
           </div>
         )}
