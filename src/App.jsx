@@ -6,7 +6,16 @@ import {
   SpeakerXMarkIcon,
 } from '@heroicons/react/24/solid';
 
+/**
+ * AY Player - A modern audio player component
+ * Features:
+ * - Audio file upload and playback
+ * - Play/Pause controls
+ * - Progress bar with seek functionality
+ * - Volume control with mute option
+ */
 function App() {
+  // State management for audio player
   const [audioFile, setAudioFile] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -16,8 +25,10 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   
+  // Reference to audio element
   const audioRef = useRef(null);
 
+  // Cleanup audio URL on unmount or file change
   React.useEffect(() => {
     return () => {
       if (audioFile) {
@@ -26,6 +37,7 @@ function App() {
     };
   }, [audioFile]);
 
+  // Handle file upload
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -41,12 +53,14 @@ function App() {
     }
   };
 
+  // Error handling
   const handleError = (e) => {
     setError('Error playing audio file. Please try another file.');
     setIsLoading(false);
     setIsPlaying(false);
   };
 
+  // Playback controls
   const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
@@ -58,21 +72,25 @@ function App() {
     }
   };
 
+  // Time update handler
   const handleTimeUpdate = () => {
     setCurrentTime(audioRef.current.currentTime);
   };
 
+  // Metadata loaded handler
   const handleLoadedMetadata = () => {
     setDuration(audioRef.current.duration);
     setIsLoading(false);
   };
 
+  // Progress bar control
   const handleProgressChange = (e) => {
     const time = e.target.value;
     setCurrentTime(time);
     audioRef.current.currentTime = time;
   };
 
+  // Volume control
   const handleVolumeChange = (e) => {
     const value = e.target.value;
     setVolume(value);
@@ -80,6 +98,7 @@ function App() {
     setIsMuted(value === 0);
   };
 
+  // Mute toggle
   const toggleMute = () => {
     if (isMuted) {
       audioRef.current.volume = volume;
@@ -90,6 +109,7 @@ function App() {
     }
   };
 
+  // Time format utility
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
@@ -99,6 +119,7 @@ function App() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-dark p-6 rounded-2xl shadow-2xl">
+        {/* File upload section */}
         <div className="mb-6">
           <label className="block text-center">
             <span className="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text text-xl font-bold mb-4 block">
@@ -119,6 +140,7 @@ function App() {
           </label>
         </div>
 
+        {/* Error and loading states */}
         {error && (
           <div className="text-red-500 text-sm text-center mb-4">
             {error}
@@ -131,6 +153,7 @@ function App() {
           </div>
         )}
 
+        {/* Audio player controls */}
         {audioFile && (
           <div className="space-y-4">
             <audio
@@ -141,6 +164,7 @@ function App() {
               onError={handleError}
             />
 
+            {/* Progress bar */}
             <div className="flex items-center justify-between space-x-4">
               <span className="text-sm">{formatTime(currentTime)}</span>
               <input
@@ -154,6 +178,7 @@ function App() {
               <span className="text-sm">{formatTime(duration)}</span>
             </div>
 
+            {/* Playback and volume controls */}
             <div className="flex items-center justify-between">
               <button
                 onClick={togglePlay}
