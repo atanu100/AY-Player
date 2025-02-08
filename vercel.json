@@ -24,11 +24,10 @@
   ],
   "routes": [
     {
-      "src": "/about",
-      "dest": "/index.html"
+      "handle": "filesystem"
     },
     {
-      "src": "/(.*)",
+      "src": "/.*",
       "dest": "/index.html"
     }
   ]
